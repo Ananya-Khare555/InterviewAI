@@ -8,7 +8,7 @@ const app = express()
 
 app.use(cors({
   origin: ["http://localhost:5173", // frontend URL
-  "https://interviewai-1-czle.onrender.com/"],
+  "https://interviewai-1-czle.onrender.com"],
   credentials: true
 }));
 app.use(express.json())
