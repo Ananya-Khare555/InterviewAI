@@ -74,7 +74,9 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 
 
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+});
     const page = await browser.newPage();
     await page.setContent(htmlContent, { waitUntil: "networkidle0" })
 
@@ -133,7 +135,14 @@ ${jobDescription}
     })
 
 
-    const jsonContent = JSON.parse(response.text)
+    let jsonContent;
+
+try {
+  jsonContent = JSON.parse(response.text);
+} catch (err) {
+  console.error("AI JSON ERROR:", response.text);
+  throw new Error("Invalid AI response");
+}
 
     const pdfBuffer = await generatePdfFromHtml(jsonContent.html)
 
