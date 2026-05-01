@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  // Relations
+  reports   InterviewReport[]
+
+  @@map("users")
+}
+
+model InterviewReport {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  score     Int?
+  feedback  String?
+  resumeText       String?   // parsed resume
+  selfDescription  String?
+  jobDescription   String?
+  createdAt DateTime @default(now())
+
+  @@map("interview_reports")
+}
+
+model BlacklistToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("blacklist_tokens")
+}
